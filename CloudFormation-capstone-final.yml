@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Fullstack DevOps Capstone
+
+Resources:
+  ImportedKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: capstone-project-dev
+      PublicKeyMaterial: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCCGKynmpeN4vWKHXVQ2qxyJqxLcwPQCCcclqjEARmQXZJ1QQIrIODeYG7vHNnRtsDXu+PmgUYLfUJ1QzVZXoqUECvmUEf2fImJaAiaCLEGHCmL9urkZW29CMRNUDwM9O1YyJIYHsxBUEH0fdr8/44tw0v88Hbdw/fJgw7XG2qbAqmKoyRmqRDeUM4AjC98nHkM/FecWNS+GltYlmWIT9sjSqHptPK64tag2bj+wcI/rybq3oVSfaartO3Hbvh/C7YK7xEuv8PHnc5f2sDLvAojkaLK1exwr63yPdLcX4PNXxeZe7q/l6rF2FbuGT7316Sq6teIN3a5C+TFWMRrB9Sj
+  WebAppInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-06ca3ca175f37dd66
+      KeyName:
+        Ref: ImportedKeyPair
+      InstanceType: t2.micro
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: '20'
+            VolumeType: gp2
+            DeleteOnTermination: 'true'
+  WebAppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: capstone-sg
+      GroupDescription: "Allow http/https inbound/outbound and SSH to and from my PC"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 192.63.159.56/32
+
